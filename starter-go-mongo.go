@@ -17,42 +17,13 @@
 package StarterGoMongo
 
 import (
-	"context"
-
 	"github.com/go-spring/spring-boot"
-	"github.com/go-spring/spring-logger"
-	"github.com/go-spring/starter-mongo"
+	"github.com/go-spring/starter-go-mongo/go-mongo-factory"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func init() {
-	SpringBoot.RegisterNameBeanFn("mongo-client", NewClient).
-		ConditionOnOptionalPropertyValue("mongo.enable", true).
-		Destroy(CloseClient)
-}
-
-// NewClient 创建 mongo 客户端
-func NewClient(config StarterMongo.MongoConfig) (*mongo.Client, error) {
-	SpringLogger.Info("open mongo ", config.Url)
-	ctx := context.Background()
-
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.Url))
-	if err != nil {
-		return nil, err
-	}
-
-	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		return nil, err
-	}
-	return client, err
-}
-
-// CloseClient 关闭 mongo 客户端
-func CloseClient(client *mongo.Client) {
-	SpringLogger.Info("close mongo")
-	if err := client.Disconnect(context.Background()); err != nil {
-		SpringLogger.Error(err)
-	}
+	SpringBoot.RegisterNameBeanFn("go-mongo-client", GoMongoFactory.NewClient).
+		ConditionOnMissingBean((*mongo.Client)(nil)).
+		Destroy(GoMongoFactory.CloseClient)
 }

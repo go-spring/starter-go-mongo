@@ -81,8 +81,8 @@ github.com/go-spring/spring-utils v0.0.0-20200809010418-ad9c325fc2db h1:agxZmTXJ
 github.com/go-spring/spring-utils v0.0.0-20200809010418-ad9c325fc2db/go.mod h1:nt7zbJs5DiOCoi548jzBC06reyS0apM6YchDY0eMbjM=
 github.com/go-spring/spring-web v0.0.0-20200809012928-e89b3ea05c5c h1:UQAxfAWf54nJYn1KrFedTsjk6VKenURWlo0l2fsh5SI=
 github.com/go-spring/spring-web v0.0.0-20200809012928-e89b3ea05c5c/go.mod h1:QzpVp98W2BtcmgmdG1MZQhfW0GY2koSmfJ4G+IrAdbY=
-github.com/go-spring/starter-mongo v0.0.0-20200809015754-aec45137b0e8 h1:gsHyaTjEEd6uSQrqiimpmYazJXVi40r93n+lxkGOkOM=
-github.com/go-spring/starter-mongo v0.0.0-20200809015754-aec45137b0e8/go.mod h1:Y2GugU07lt4Dk2MaGyLm2dIHSh6ETvQYXe/Oa0jepwY=
+github.com/go-spring/starter-mongo v0.0.0-20200809141241-9ff7d7f4ae79 h1:BsLk298kkUxBf3sdz+MXqxF620sj0JHIzfTI270DFto=
+github.com/go-spring/starter-mongo v0.0.0-20200809141241-9ff7d7f4ae79/go.mod h1:Y2GugU07lt4Dk2MaGyLm2dIHSh6ETvQYXe/Oa0jepwY=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
