@@ -41,8 +41,8 @@ type connectionConfig struct {
 	dialer                   Dialer
 	handshaker               Handshaker
 	idleTimeout              time.Duration
-	lifeTimeout              time.Duration
 	cmdMonitor               *event.CommandMonitor
+	poolMonitor              *event.PoolMonitor
 	readTimeout              time.Duration
 	writeTimeout             time.Duration
 	tlsConfig                *tls.Config
@@ -52,13 +52,14 @@ type connectionConfig struct {
 	ocspCache                ocsp.Cache
 	disableOCSPEndpointCheck bool
 	errorHandlingCallback    func(error, uint64)
+	tlsConnectionSource      tlsConnectionSource
 }
 
 func newConnectionConfig(opts ...ConnectionOption) (*connectionConfig, error) {
 	cfg := &connectionConfig{
-		connectTimeout: 30 * time.Second,
-		dialer:         nil,
-		lifeTimeout:    30 * time.Minute,
+		connectTimeout:      30 * time.Second,
+		dialer:              nil,
+		tlsConnectionSource: defaultTLSConnectionSource,
 	}
 
 	for _, opt := range opts {
@@ -69,7 +70,7 @@ func newConnectionConfig(opts ...ConnectionOption) (*connectionConfig, error) {
 	}
 
 	if cfg.dialer == nil {
-		cfg.dialer = &net.Dialer{Timeout: cfg.connectTimeout}
+		cfg.dialer = &net.Dialer{}
 	}
 
 	return cfg, nil
@@ -77,6 +78,13 @@ func newConnectionConfig(opts ...ConnectionOption) (*connectionConfig, error) {
 
 // ConnectionOption is used to configure a connection.
 type ConnectionOption func(*connectionConfig) error
+
+func withTLSConnectionSource(fn func(tlsConnectionSource) tlsConnectionSource) ConnectionOption {
+	return func(c *connectionConfig) error {
+		c.tlsConnectionSource = fn(c.tlsConnectionSource)
+		return nil
+	}
+}
 
 func withErrorHandlingCallback(fn func(error, uint64)) ConnectionOption {
 	return func(c *connectionConfig) error {
@@ -127,14 +135,6 @@ func WithIdleTimeout(fn func(time.Duration) time.Duration) ConnectionOption {
 	}
 }
 
-// WithLifeTimeout configures the maximum life of a connection.
-func WithLifeTimeout(fn func(time.Duration) time.Duration) ConnectionOption {
-	return func(c *connectionConfig) error {
-		c.lifeTimeout = fn(c.lifeTimeout)
-		return nil
-	}
-}
-
 // WithReadTimeout configures the maximum read time for a connection.
 func WithReadTimeout(fn func(time.Duration) time.Duration) ConnectionOption {
 	return func(c *connectionConfig) error {
@@ -163,6 +163,14 @@ func WithTLSConfig(fn func(*tls.Config) *tls.Config) ConnectionOption {
 func WithMonitor(fn func(*event.CommandMonitor) *event.CommandMonitor) ConnectionOption {
 	return func(c *connectionConfig) error {
 		c.cmdMonitor = fn(c.cmdMonitor)
+		return nil
+	}
+}
+
+// withPoolMonitor configures a event for connection monitoring.
+func withPoolMonitor(fn func(*event.PoolMonitor) *event.PoolMonitor) ConnectionOption {
+	return func(c *connectionConfig) error {
+		c.poolMonitor = fn(c.poolMonitor)
 		return nil
 	}
 }
